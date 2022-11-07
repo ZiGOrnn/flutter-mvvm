@@ -1,5 +1,5 @@
 import 'package:my_app/features/auth/data/models/user_list_response.dart';
-import 'package:my_app/features/auth/domain/repositories/user_repository.dart';
+import 'package:my_app/features/auth/data/repositories/user_repository.dart';
 
 class UserRepositorySpy implements UserRepository {
   bool invokedGetUsers = false;

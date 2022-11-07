@@ -1,4 +1,4 @@
-import 'package:my_app/features/auth/domain/repositories/user_repository.dart';
+import 'package:my_app/features/auth/data/repositories/user_repository.dart';
 import 'package:my_app/features/auth/domain/models/user_model.dart';
 
 abstract class UserUseCases {
