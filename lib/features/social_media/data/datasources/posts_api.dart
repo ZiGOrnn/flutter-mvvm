@@ -1,101 +1,91 @@
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
-import 'package:my_app/features/social_media/data/models/comments_response.dart';
-import 'package:my_app/features/social_media/data/models/post_response.dart';
-import 'package:my_app/features/social_media/enum/posts_url.dart';
-import 'package:my_app/features/social_media/data/models/posts_response.dart';
+import 'package:http/http.dart';
+import 'package:my_app/features/social_media/enum/post_provider.dart';
+import 'package:my_app/shared/abstract/target_type.dart';
 import 'package:my_app/shared/constant/api_status_code.dart';
 import 'package:my_app/shared/constant/api_status_message.dart';
 import 'package:my_app/shared/models/api_status.dart';
 
-abstract class PostsApi {
-  Future<dynamic> getComments(String postId);
-  Future<dynamic> getPost(String id);
-  Future<dynamic> getPosts();
+abstract class PostApi {
+  Future<dynamic> execute();
 }
 
-class PostsApiImpl implements PostsApi {
-  const PostsApiImpl();
+class PostApiImpl implements PostApi, TargetType {
+  PostProvider provider;
+  String? id;
+
+  PostApiImpl({required this.provider, this.id = ""});
 
   @override
-  Future getComments(String postId) async {
-    try {
-      var url = Uri.parse(PostsUrl.getComments(postId));
-      var response = await http.get(url);
-      if (response.statusCode == success) {
-        final commentsResponse = commentsResponseFromJson(response.body);
-        return Success<List<CommentsResponse>>(
-          code: success,
-          response: commentsResponse,
-        );
-      }
-      return Failure<String>(
-        code: invalidResponse,
-        errorResponse: invalidResponseMsg,
-      );
-    } on HttpException {
-      return Failure<String>(
-        code: noInternet,
-        errorResponse: noInternetMsg,
-      );
-    } on FormatException {
-      return Failure<String>(
-        code: invalidFormat,
-        errorResponse: invalidFormatMsg,
-      );
-    } catch (e) {
-      return Failure<String>(
-        code: unknownError,
-        errorResponse: unknownErrorMsg,
-      );
+  String baseURL() {
+    String url;
+    switch (provider) {
+      case PostProvider.getComments:
+      case PostProvider.getPost:
+      case PostProvider.getPosts:
+      case PostProvider.createPost:
+      case PostProvider.editPost:
+      case PostProvider.deletePost:
+        url = "https://jsonplaceholder.typicode.com";
+        break;
     }
+    return url;
   }
 
   @override
-  Future getPost(String id) async {
-    try {
-      var url = Uri.parse(PostsUrl.getPost(id));
-      var response = await http.get(url);
-      if (response.statusCode == success) {
-        final postResponse = postResponseFromJson(response.body);
-        return Success<PostResponse>(
-          code: success,
-          response: postResponse,
-        );
-      }
-      return Failure<String>(
-        code: invalidResponse,
-        errorResponse: invalidResponseMsg,
-      );
-    } on HttpException {
-      return Failure<String>(
-        code: noInternet,
-        errorResponse: noInternetMsg,
-      );
-    } on FormatException {
-      return Failure<String>(
-        code: invalidFormat,
-        errorResponse: invalidFormatMsg,
-      );
-    } catch (e) {
-      return Failure<String>(
-        code: unknownError,
-        errorResponse: unknownErrorMsg,
-      );
+  String path() {
+    String pathReq;
+    switch (provider) {
+      case PostProvider.getComments:
+        pathReq = "/posts/$id/comments";
+        break;
+      case PostProvider.getPosts:
+        pathReq = "/posts";
+        break;
+      case PostProvider.getPost:
+      case PostProvider.createPost:
+      case PostProvider.editPost:
+      case PostProvider.deletePost:
+        pathReq = "/posts/$id";
+        break;
     }
+    return pathReq;
   }
 
   @override
-  Future getPosts() async {
+  Future<Response> request(Uri uri) async {
+    Response response;
+    switch (provider) {
+      case PostProvider.getComments:
+      case PostProvider.getPost:
+      case PostProvider.getPosts:
+        response = await http.get(uri);
+        break;
+      case PostProvider.createPost:
+        response = await http.post(uri);
+        break;
+      case PostProvider.editPost:
+        response = await http.patch(uri);
+        break;
+      case PostProvider.deletePost:
+        response = await http.delete(uri);
+        break;
+    }
+    return response;
+  }
+
+  @override
+  Future<dynamic> execute() async {
     try {
-      var url = Uri.parse(PostsUrl.getPosts);
-      var response = await http.get(url);
+      final url = baseURL();
+      final uri = Uri.parse(url);
+      var response = await request(uri);
       if (response.statusCode == success) {
-        final postsResponse = postsResponseFromJson(response.body);
-        return Success<List<PostsResponse>>(
+        return Success<String>(
           code: success,
-          response: postsResponse,
+          response: response.body,
         );
       }
       return Failure<String>(
