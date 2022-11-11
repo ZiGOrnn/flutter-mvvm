@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_app/features/auth/presentation/pages/user_page.dart';
+import 'package:my_app/features/social_media/presentation/pages/social_media_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: const UserPage(),
+      home: const SocialMediaPage(),
     );
   }
 }

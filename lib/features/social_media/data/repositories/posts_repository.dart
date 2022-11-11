@@ -1,14 +1,13 @@
 import 'package:my_app/features/social_media/data/datasources/posts_api.dart';
 import 'package:my_app/features/social_media/data/models/comments_response.dart';
 import 'package:my_app/features/social_media/data/models/post_response.dart';
-import 'package:my_app/features/social_media/data/models/posts_response.dart';
 import 'package:my_app/features/social_media/enum/post_provider.dart';
 import 'package:my_app/shared/models/api_status.dart';
 
 abstract class PostsRepository {
   Future<List<CommentsResponse>> getComments(String postId);
   Future<PostResponse> getPost(String id);
-  Future<List<PostsResponse>> getPosts();
+  Future<List<PostResponse>> getPosts();
 }
 
 class PostsRepositoryImpl implements PostsRepository {
@@ -37,7 +36,7 @@ class PostsRepositoryImpl implements PostsRepository {
   }
 
   @override
-  Future<List<PostsResponse>> getPosts() async {
+  Future<List<PostResponse>> getPosts() async {
     PostApi postsApi = PostApiImpl(provider: PostProvider.getPosts);
     final result = await postsApi.execute();
     if (result is Success<String>) {

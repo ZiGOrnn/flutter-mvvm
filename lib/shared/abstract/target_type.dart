@@ -1,7 +1,8 @@
 import 'package:http/http.dart';
 
 abstract class TargetType {
-  String baseURL();
-  String path();
-  Future<Response> request(Uri uri);
+  String get baseURL;
+  String get path;
+  String get url;
+  Future<Response> request();
 }

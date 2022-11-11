@@ -4,6 +4,9 @@
 
 import 'dart:convert';
 
+List<PostResponse> postsResponseFromJson(String str) => List<PostResponse>.from(
+    json.decode(str).map((x) => PostResponse.fromJson(x)));
+
 PostResponse postResponseFromJson(String str) =>
     PostResponse.fromJson(json.decode(str));
 
