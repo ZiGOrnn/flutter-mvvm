@@ -3,8 +3,8 @@ import 'package:my_app/features/social_media/domain/models/comment_model.dart';
 import 'package:my_app/features/social_media/domain/models/post_model.dart';
 
 abstract class PostUseCases {
-  Future<List<CommentModel>> getComments(String postId);
-  Future<PostModel> getPost(String id);
+  Future<List<CommentModel>> getComments(int postId);
+  Future<PostModel> getPost(int id);
   Future<List<PostModel>> getPosts();
 }
 
@@ -14,7 +14,7 @@ class PostUseCasesImpl implements PostUseCases {
   const PostUseCasesImpl({this.postsRepository = const PostsRepositoryImpl()});
 
   @override
-  Future<List<CommentModel>> getComments(String postId) async {
+  Future<List<CommentModel>> getComments(int postId) async {
     final result = await postsRepository.getComments(postId);
     List<CommentModel> comments = [];
     if (result.isNotEmpty) {
@@ -33,7 +33,7 @@ class PostUseCasesImpl implements PostUseCases {
   }
 
   @override
-  Future<PostModel> getPost(String id) async {
+  Future<PostModel> getPost(int id) async {
     PostModel post = PostModel();
     final result = await postsRepository.getPost(id);
     post = PostModel(

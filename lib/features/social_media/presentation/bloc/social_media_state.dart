@@ -13,3 +13,8 @@ class SocialMediaSuccess extends SocialMediaState {
   final List<PostModel> posts;
   const SocialMediaSuccess(this.posts);
 }
+
+class PostSuccess extends SocialMediaState {
+  final PostModel post;
+  const PostSuccess(this.post);
+}

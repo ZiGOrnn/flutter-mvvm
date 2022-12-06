@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/foundation.dart';
 import 'package:my_app/features/social_media/domain/models/post_model.dart';
 import 'package:my_app/features/social_media/domain/usecases/post_usecases.dart';
 
@@ -13,11 +12,8 @@ class SocialMediaBloc extends Bloc<SocialMediaEvent, SocialMediaState> {
   SocialMediaBloc({this.postUseCases = const PostUseCasesImpl()})
       : super(SocialMediaInitial()) {
     on<SocialMediaLoadingEvent>((event, emit) async {
-      final posts = await postUseCases.getPosts();
-      if (kDebugMode) {
-        print(posts.length);
-      }
-      emit(SocialMediaSuccess(posts));
+      final post = await postUseCases.getPost(0);
+      emit(PostSuccess(post));
     });
   }
 }

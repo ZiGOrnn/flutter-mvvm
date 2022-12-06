@@ -1,48 +1,28 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
+import 'package:my_app/features/social_media/data/models/post_body.dart';
 import 'package:my_app/features/social_media/enum/post_provider.dart';
 import 'package:my_app/shared/abstract/target_type.dart';
 import 'package:my_app/shared/constant/api_status_code.dart';
 import 'package:my_app/shared/constant/api_status_message.dart';
 import 'package:my_app/shared/models/api_status.dart';
 
-class PostBody {
-  PostBody({
-    required this.userId,
-    required this.title,
-    this.body,
-  });
-
-  int userId;
-  String title;
-  String? body;
-
-  String toJson() => jsonEncode(<String, dynamic>{
-        "userId": userId,
-        "title": title,
-        "body": body,
-      });
-}
-
 abstract class PostApi {
+  late int id;
+  late PostBody postBody;
   Future<dynamic> execute();
 }
 
 class PostApiImpl implements PostApi, TargetType {
   PostProvider provider;
-  String? id;
-  late String _postBody;
+  @override
+  late int id;
+  @override
+  late PostBody postBody;
 
-  PostApiImpl({required this.provider, this.id = ""});
-
-  set setPostBody(PostBody body) {
-    _postBody = body.toJson();
-  }
-
-  String get postBody => _postBody;
+  PostApiImpl({required this.provider});
 
   @override
   String get baseURL {
@@ -98,7 +78,7 @@ class PostApiImpl implements PostApi, TargetType {
       case PostProvider.createPost:
         response = await http.post(
           uri,
-          body: postBody,
+          body: postBody.toJson(),
         );
         break;
       case PostProvider.editPost:
